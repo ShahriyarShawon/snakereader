@@ -1,0 +1,23 @@
+* {
+    margin:0px;
+    padding:0px;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    color:cyan;
+
+}
+
+.content {
+    width: 65%;
+    margin: 0 auto;
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
