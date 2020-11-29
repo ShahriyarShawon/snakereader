@@ -10,9 +10,10 @@
 
 <body>
     <h1>{{ context.comic_name }}</h1>
+    <a href="/library/">Go back to library</a>
 
     {% for chapter in context.chapters %}
-    <li><a href="{{context.comic_name}}/{{chapter}}">{{chapter}}</a></li>
+    <li><a href="/library/{{context.comic_name}}/{{chapter}}">{{chapter}}</a></li>
     {% endfor %}
 
 </body>
