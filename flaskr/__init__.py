@@ -57,13 +57,43 @@ def create_app(test_config=None):
     """
     @app.route('/library/<comic_name>/<chapter>')
     def get_pages(comic_name, chapter):
+        # TODO implement previous and next chapter feature
+        chapters = os.listdir('flaskr/static/comics/{}'.format(comic_name))
+        chapters = [chapter for chapter in chapters if "cbz" not in chapter]
+        chapters.sort(key=num_sort)
+        current_chapter_index = chapters.index(chapter)
+        has_prev = False
+        has_next = False
+        next_chapter = None
+        previous_chapter = None
+
+        if current_chapter_index + 1 <= len(chapters) - 1:
+            has_next = True
+            next_chapter = chapters[current_chapter_index+1]
+        if current_chapter_index - 1 >= 0:
+            has_prev = True
+            previous_chapter = chapters[current_chapter_index-1]
+        
+
+  
+
+
         pages = os.listdir(
             'flaskr/static/comics/{}/{}'.format(comic_name, chapter))
         pages.sort(key=num_sort)
         pages = [
             'comics/{}/{}/{}'.format(comic_name, chapter, page) for page in pages]
 
-        return render_template('chapter.html', pages=pages)
+        context = {
+            "comic_name":comic_name,
+            "chapter":chapter,
+            "has_prev":has_prev,
+            "has_next":has_next,
+            "next_chapter":next_chapter,
+            "previous_chapter":previous_chapter
+        }
+
+        return render_template('chapter.html', pages=pages, context=context)
 
     @app.route('/library/upload', methods=['GET','POST'])
     def upload():
