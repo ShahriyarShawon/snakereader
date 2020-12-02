@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% block title %}{{context.comic_name}}{% endblock title %}
 
-<body>
+{% block header %}
     <h1>{{ context.comic_name }}</h1>
     <a href="/library/">Go back to library</a>
+{% endblock header%}
 
+{% block content %}
     {% for chapter in context.chapters %}
     <li><a href="/library/{{context.comic_name}}/{{chapter}}">{{chapter}}</a></li>
     {% endfor %}
-
-</body>
-
-</html>
+{% endblock content%}

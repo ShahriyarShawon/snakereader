@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-
-<body>
-    <h1>Upload</h1>
-    <a href="/library/">Go back to library</a>
-
-    <form action="upload" method="POST" enctype="multipart/form-data">
-        <label for="comic">Upload a comic</label>
-        <input type="file" name="comic" id="comic">
-        <select name="folder" id="folder">
-            <option value="uncategorized">uncategorized</option>
-            {% for comic in comics %}
-                <option value="{{comic}}">{{comic}}</option>
-            {% endfor %}
-            
-        </select>
-        
-        <input type="submit" value="Submit">
-    </form>
+{%extends 'base.html'%}
 
 
-</body>
+{% block title%}
+Upload
+{% endblock title%}
 
-</html>
+{% block header %}
+<h1>Upload</h1>
+<a href="/library/">Go back to library</a>
+{% endblock header %}
+
+{% block content%}
+<form action="upload" method="POST" enctype="multipart/form-data">
+    <label for="comic">Upload a comic</label>
+    <input type="file" name="comic" id="comic">
+    <select name="folder" id="folder">
+        <option value="uncategorized">uncategorized</option>
+        {% for comic in comics %}
+        <option value="{{comic}}">{{comic}}</option>
+        {% endfor %}
+
+    </select>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content%}
+

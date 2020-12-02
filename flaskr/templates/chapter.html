@@ -1,40 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+{%extends 'base.html'%}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="{{url_for('static',filename='scripts.js')}}"></script>
-</head>
+{%block title%}
+{{context.chapter}} 
+{%endblock title%}}
 
-<body>
-    <h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a></h1>
-    <h3>{{context.chapter}}</h3>
-    <button onclick="make_full()">Full screen</button>
-    <button onclick="make_half()">half screen</button>
-    <div class="content" id="content">
-        {% if context.has_prev %}
-        <a href="{{context.previous_chapter}}">Previous Chapter</a>
-        {% endif %}
-        {% if context.has_next %}
-        <a href="{{context.next_chapter}}">Next Chapter</a>
-        {% endif %}
-        
-        {% for page in pages %}
-        <img src="{{url_for('static', filename=page)}}" alt="">
-        {% endfor %}
+{%block header%}
+<h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a></h1>
+<h3>{{context.chapter}}</h3>
+<button onclick="make_full()">Full screen</button>
+<button onclick="make_half()">half screen</button>
+{%endblock header%}
 
-        {% if context.has_prev %}
-        <a href="{{context.previous_chapter}}">Previous Chapter</a>
-        {% endif %}
-        {% if context.has_next %}
-        <a href="{{context.next_chapter}}">Next Chapter</a>
-        {% endif %}
+{%block content%}
+{% if context.has_prev %}
+<a href="{{context.previous_chapter}}">Previous Chapter</a>
+{% endif %}
+{% if context.has_next %}
+<a href="{{context.next_chapter}}">Next Chapter</a>
+{% endif %}
 
-    </div>
-    
+{% for page in pages %}
+<img src="{{url_for('static', filename=page)}}" alt="">
+{% endfor %}
+
+{% if context.has_prev %}
+<a href="{{context.previous_chapter}}">Previous Chapter</a>
+{% endif %}
+{% if context.has_next %}
+<a href="{{context.next_chapter}}">Next Chapter</a>
+{% endif %}
+{%endblock content%}
 
 </body>
 
