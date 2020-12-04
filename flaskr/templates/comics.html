@@ -4,13 +4,20 @@
 
 {%block header%}
     <h1>Library</h1>   
-    <a href="/library/upload">Upload</a>
+    <a id="upload" href="/library/upload">Upload</a>
 {%endblock header%}
     
 {% block content %}
-{% for comic in comic_series %}
-<li><a href="/library/{{comic}}">{{comic}}</a></li>
-{% endfor %}
+<div class="chapters">
+    {% for comic, thumbnail in series_dict.items() %}
+    <figure>
+        <a href="/library/{{comic}}"><img class="thumbnail" src="{{thumbnail }}" alt=""></a>
+        <figcaption><a href="/library/{{comic}}">{{comic}}</a></figcaption>  
+
+    </figure>
+    
+    {% endfor %}
+</div>
 {%endblock content%}
 
     
