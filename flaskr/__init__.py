@@ -1,7 +1,7 @@
 import os
 from zipfile import ZipFile
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 
 from .helper import num_sort
 
@@ -34,8 +34,14 @@ def create_app(test_config=None):
     @app.route('/library')
     @app.route('/library/')
     def library():
-        comic_series = os.listdir('flaskr/static/comics/') 
-        return render_template('comics.html', comic_series=comic_series)
+        series_dict = {}
+        comic_series = os.listdir('flaskr/static/comics/')
+        comic_series.sort()
+        thumbnails = [ url_for('static', filename="{}_thumbnail.png".format(series)) for series in comic_series ]
+
+        for i in range(len(comic_series)):
+            series_dict[comic_series[i]] = thumbnails[i]
+        return render_template('comics.html', series_dict=series_dict)
 
     """
     Shows all chapters of a certain comic
@@ -43,7 +49,11 @@ def create_app(test_config=None):
     @app.route('/library/<comic_name>/')
     def comic_selection(comic_name):
         chapters = os.listdir('flaskr/static/comics/{}'.format(comic_name))
-        chapters = [chapter for chapter in chapters if "cbz" not in chapter]
+        chapters = [chapter for chapter in chapters if "cbz" not in chapter ]
+        try:
+            chapters.remove("thumbnail.png")
+        except ValueError:
+            pass
         chapters.sort(key=num_sort)
         
         context = {
@@ -57,7 +67,6 @@ def create_app(test_config=None):
     """
     @app.route('/library/<comic_name>/<chapter>')
     def get_pages(comic_name, chapter):
-        # TODO implement previous and next chapter feature
         chapters = os.listdir('flaskr/static/comics/{}'.format(comic_name))
         chapters = [chapter for chapter in chapters if "cbz" not in chapter]
         chapters.sort(key=num_sort)
