@@ -1,6 +1,5 @@
 flaskr/static/comics/*
 flaskr/__pycache__/
 instance/
-deploy
 *.png
 *.jpg
