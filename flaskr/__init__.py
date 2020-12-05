@@ -6,6 +6,9 @@ from flask import Flask, render_template, request, redirect, url_for
 from .helper import num_sort
 
 
+COMICS_DIRECTORY = 'flaskr/static/comics'
+# COMICS_DIRECTORY = '/home/shahriyar/Documents/mango'
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -35,7 +38,7 @@ def create_app(test_config=None):
     @app.route('/library/')
     def library():
         series_dict = {}
-        comic_series = os.listdir('flaskr/static/comics/')
+        comic_series = os.listdir(COMICS_DIRECTORY)
         comic_series.sort()
         thumbnails = [ url_for('static', filename="{}_thumbnail.png".format(series)) for series in comic_series ]
 
@@ -48,12 +51,14 @@ def create_app(test_config=None):
     """
     @app.route('/library/<comic_name>/')
     def comic_selection(comic_name):
-        chapters = os.listdir('flaskr/static/comics/{}'.format(comic_name))
+        chapters = os.listdir('{}/{}'.format(COMICS_DIRECTORY,comic_name))
+        
         chapters = [chapter for chapter in chapters if "cbz" not in chapter ]
         try:
             chapters.remove("thumbnail.png")
         except ValueError:
             pass
+        #print("Chapters: {}".format(chapters))
         chapters.sort(key=num_sort)
         
         context = {
@@ -67,7 +72,7 @@ def create_app(test_config=None):
     """
     @app.route('/library/<comic_name>/<chapter>')
     def get_pages(comic_name, chapter):
-        chapters = os.listdir('flaskr/static/comics/{}'.format(comic_name))
+        chapters = os.listdir('{}/{}'.format(COMICS_DIRECTORY,comic_name))
         chapters = [chapter for chapter in chapters if "cbz" not in chapter]
         chapters.sort(key=num_sort)
         current_chapter_index = chapters.index(chapter)
@@ -87,8 +92,7 @@ def create_app(test_config=None):
   
 
 
-        pages = os.listdir(
-            'flaskr/static/comics/{}/{}'.format(comic_name, chapter))
+        pages = os.listdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter))
         pages.sort(key=num_sort)
         pages = [
             'comics/{}/{}/{}'.format(comic_name, chapter, page) for page in pages]
