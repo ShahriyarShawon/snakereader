@@ -5,31 +5,38 @@
 {%endblock title%}}
 
 {%block header%}
-<h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a></h1>
-<h3>{{context.chapter}}</h3>
-<button onclick="make_full()">Full screen</button>
-<button onclick="make_half()">half screen</button>
+<div class="chapter-header">
+    <h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a></h1>
+    <h3>{{context.chapter}}</h3>
+    <button onclick="make_full()">Full screen</button>
+    <button onclick="make_half()">half screen</button>
+</div>
+
 {%endblock header%}
 
 {%block content%}
-{% if context.has_prev %}
-<a href="{{context.previous_chapter}}">Previous Chapter</a>
-{% endif %}
-{% if context.has_next %}
-<a href="{{context.next_chapter}}">Next Chapter</a>
-{% endif %}
+<div class="chapter-nav-holder">
+    {% if context.has_prev %}
+    <a class="previous-button" href="{{context.previous_chapter}}"> < Previous Chapter</a>
+    {% endif %}
+    {% if context.has_next %}
+    <a class="next-button" href="{{context.next_chapter}}">Next Chapter > </a>
+    {% endif %}
+</div>
 
 {% for page in pages %}
 <img src="{{url_for('static', filename=page)}}" alt="">
 {% endfor %}
 
-{% if context.has_prev %}
-<a href="{{context.previous_chapter}}">Previous Chapter</a>
-{% endif %}
-{% if context.has_next %}
-<a href="{{context.next_chapter}}">Next Chapter</a>
-{% endif %}
-{%endblock content%}
+<div class="chapter-nav-holder">
+    {% if context.has_prev %}
+    <a class="previous-button" href="{{context.previous_chapter}}"> < Previous Chapter</a>
+    {% endif %}
+    {% if context.has_next %}
+    <a class="next-button" href="{{context.next_chapter}}">Next Chapter > </a>
+    {% endif %}
+    {%endblock content%}
+</div>
 
 </body>
 

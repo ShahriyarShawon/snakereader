@@ -8,7 +8,11 @@
 {% endblock header%}
 
 {% block content %}
+<div class="pages">
     {% for chapter in context.chapters %}
     <li><a href="/library/{{context.comic_name}}/{{chapter}}">{{chapter}}</a></li>
     {% endfor %}
+
+</div>
+    
 {% endblock content%}
