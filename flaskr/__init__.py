@@ -7,7 +7,6 @@ from .helper import num_sort
 
 
 COMICS_DIRECTORY = 'flaskr/static/comics'
-# COMICS_DIRECTORY = '/home/shahriyar/Documents/mango'
 
 def create_app(test_config=None):
     # create and configure the app
@@ -40,10 +39,13 @@ def create_app(test_config=None):
         series_dict = {}
         comic_series = os.listdir(COMICS_DIRECTORY)
         comic_series.sort()
+        # thumbnails should all the the format of {series_title}_thumbnail.png
+        # and should all be placed in the root of the static directory 
         thumbnails = [ url_for('static', filename="{}_thumbnail.png".format(series)) for series in comic_series ]
 
         for i in range(len(comic_series)):
             series_dict[comic_series[i]] = thumbnails[i]
+
         return render_template('comics.html', series_dict=series_dict)
 
     """
@@ -58,7 +60,7 @@ def create_app(test_config=None):
             chapters.remove("thumbnail.png")
         except ValueError:
             pass
-        #print("Chapters: {}".format(chapters))
+        # sort by the number at the end of the chaptername
         chapters.sort(key=num_sort)
         
         context = {
@@ -74,13 +76,17 @@ def create_app(test_config=None):
     def get_pages(comic_name, chapter):
         chapters = os.listdir('{}/{}'.format(COMICS_DIRECTORY,comic_name))
         chapters = [chapter for chapter in chapters if "cbz" not in chapter]
+        # sort by the number at the end of the chaptername
         chapters.sort(key=num_sort)
+
         current_chapter_index = chapters.index(chapter)
         has_prev = False
         has_next = False
         next_chapter = None
         previous_chapter = None
 
+        # This decides whether or not there will be a next chapter 
+        # or a previous chapter button. Either neither, one, or both
         if current_chapter_index + 1 <= len(chapters) - 1:
             has_next = True
             next_chapter = chapters[current_chapter_index+1]
@@ -88,11 +94,8 @@ def create_app(test_config=None):
             has_prev = True
             previous_chapter = chapters[current_chapter_index-1]
         
-
-  
-
-
         pages = os.listdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter))
+        # making sure it's sorting numerically and not lexicographically
         pages.sort(key=num_sort)
         pages = [
             'comics/{}/{}/{}'.format(comic_name, chapter, page) for page in pages]
@@ -111,24 +114,19 @@ def create_app(test_config=None):
     @app.route('/library/upload', methods=['GET','POST'])
     def upload():
         if request.method == 'POST':
+            # You can add supported file types here but as of Dec 4 2020, 
+            # only directories of images actually work
             supported_filetypes = [
                 "cbz",
                 "zip",
             ]
 
-
             folder = request.form["folder"]
             f = request.files['comic']
             final_filename = "{}/{}".format(folder, f.filename)
-            
-
-            # if the filename extension is allowed, then extract the file and delete the archive
-
             final_filepath = 'flaskr/static/comics/{}'.format(final_filename)
             f.save(final_filepath)
 
-
-            # TODO handle extensions
             extension = final_filename[-3:]
             print("The final filename is {}".format(final_filename))
             print("The extension is {}".format(extension))
