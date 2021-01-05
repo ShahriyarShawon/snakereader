@@ -55,7 +55,7 @@ def create_app(test_config=None):
     def comic_selection(comic_name):
         chapters = os.listdir('{}/{}'.format(COMICS_DIRECTORY,comic_name))
         
-        chapters = [chapter for chapter in chapters if "cbz" not in chapter ]
+        chapters = [chapter.replace(".cbz","") for chapter in chapters if "cbz" in chapter ]
         try:
             chapters.remove("thumbnail.png")
         except ValueError:
@@ -75,7 +75,7 @@ def create_app(test_config=None):
     @app.route('/library/<comic_name>/<chapter>')
     def get_pages(comic_name, chapter):
         chapters = os.listdir('{}/{}'.format(COMICS_DIRECTORY,comic_name))
-        chapters = [chapter for chapter in chapters if "cbz" not in chapter]
+        chapters = [chapter.replace(".cbz","") for chapter in chapters if "cbz" in chapter]
         # sort by the number at the end of the chaptername
         chapters.sort(key=num_sort)
 
@@ -93,6 +93,13 @@ def create_app(test_config=None):
         if current_chapter_index - 1 >= 0:
             has_prev = True
             previous_chapter = chapters[current_chapter_index-1]
+
+        # extracts cbz file if needed
+        if not os.path.isdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter)):
+            with ZipFile('flaskr/static/comics/{}/{}.cbz'.format(comic_name, chapter)) as zipped:
+                zipped.extractall('flaskr/static/comics/{}'.format(comic_name))
+                print("Iran")
+            
         
         pages = os.listdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter))
         # making sure it's sorting numerically and not lexicographically
