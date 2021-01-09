@@ -6,8 +6,12 @@
 
 {%block header%}
 <div class="chapter-header">
-    <h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a></h1>
+    
+    <h1><a href="/library/{{context.comic_name}}">{{context.comic_name}}</a>
+    </h1>
+    <a href="/library">Back To Library</a>
     <h3>{{context.chapter}}</h3>
+    
     <button onclick="make_full()">Full screen</button>
     <button onclick="make_half()">half screen</button>
 </div>
