@@ -8,6 +8,7 @@ function make_full(){
 function make_half() {
     var content = document.getElementById("content");
     content.style.width = "65%";
+    content.style.margin = "0 auto";
     console.log("Ran half");
 
 }
