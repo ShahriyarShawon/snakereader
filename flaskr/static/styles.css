@@ -13,7 +13,10 @@ h1 {
     text-align: center;
     color:#eee;
     padding:5px;
+}
 
+p {
+    color:white;
 }
 
 .content {

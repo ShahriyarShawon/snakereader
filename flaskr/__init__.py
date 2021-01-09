@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 from flask import Flask, render_template, request, redirect, url_for
 
-from .helper import num_sort
+from .helper import *
 
 
 COMICS_DIRECTORY = '/home/shahriyar/Documents/comics/'
@@ -51,6 +51,25 @@ def create_app(test_config=None):
             series_dict[comic_series[i]] = thumbnails[i]
 
         return render_template('comics.html', series_dict=series_dict)
+    
+    @app.route("/management")
+    @app.route("/management/")
+    def management():
+        num_series = len(os.listdir(COMICS_DIRECTORY))
+        comic_directory_size = sizeof_fmt(size_of_directory(COMICS_DIRECTORY))
+        cache_directory_size = sizeof_fmt(size_of_directory(CACHE_DIR))
+        context = {
+            "num_series":num_series,
+            "comic_directory_size":comic_directory_size,
+            "cache_directory_size":cache_directory_size
+        }
+        return render_template('manage.html', context = context)
+    
+    @app.route("/management/clearcache")
+    @app.route("/management/clearcache/")
+    def clear_cache():
+        clear_directory(CACHE_DIR)
+        return redirect("/management/")
 
     """
     Shows all chapters of a certain comic

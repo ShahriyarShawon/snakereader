@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+
+{%block title%}
+Snakereader Management
+{%endblock title%}}
+
+
+
+{%block header%}
+<h1>Manage Snakereader</h1>
+{%endblock header%}
+
+
+
+{%block content%}
+<p>
+    There are: {{ context.num_series }} series.
+</p>
+<p>
+    Size of your comics directory: {{ context.comic_directory_size}}
+</p>
+<p>
+    Size of your cache: {{ context.cache_directory_size}}
+</p>
+<a href="/management/clearcache">Clear Cache</a>
+{%endblock content%}
