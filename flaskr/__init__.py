@@ -99,14 +99,14 @@ def create_app(test_config=None):
             previous_chapter = chapters[current_chapter_index-1]
 
         # extracts cbz file if needed
-        chapter_folder = COMICS_DIRECTORY+'{}/{}'.format(comic_name, chapter)
-        if not os.path.isdir(chapter_folder):
+        chapter_cache_folder = CACHE_DIR+'{}/{}'.format(comic_name, chapter)
+        if not os.path.isdir(chapter_cache_folder):
             with ZipFile(COMICS_DIRECTORY+'{}/{}.cbz'.format(comic_name, chapter)) as zipped:
-                zipped.extractall(COMICS_DIRECTORY+'{}'.format(comic_name))
+                zipped.extractall(CACHE_DIR+'{}'.format(comic_name))
 
         # Pages should be copied to the cache directory then 
         # everything else should run
-        pages = os.listdir(chapter_folder)
+        pages = os.listdir(chapter_cache_folder)
 
         # create a temporary cache directory that flask can serve images from
         comic_cache_dir = CACHE_DIR+'{}/'.format(comic_name)
@@ -116,8 +116,7 @@ def create_app(test_config=None):
             os.mkdir(comic_cache_dir)
         if not os.path.isdir(chapter_cache_dir):
             os.mkdir(chapter_cache_dir)
-            for page in pages:
-                shutil.copy(COMICS_DIRECTORY+"{}/{}/{}".format(comic_name,chapter,page),chapter_cache_dir)
+            
 
         # making sure it's sorting numerically and not lexicographically
         pages.sort(key=num_sort)
