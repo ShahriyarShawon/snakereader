@@ -13,26 +13,21 @@ Try not to have spaces in the names of anything, it's a nuisance to deal with.
 - gunicorn
 
 ## Installation
-clone this repo
+Clone this repo
 
-put your comics in `flaskr/static/comics`
+Change `COMICS_DIRECTORY` to the directory your comics are in.
 
-If the comics directory is not there, make it.
+MAKE SURE YOUR DIRECTORY HAS A TRAILING `/`
 
-Chapters should be stored in a directory with the comic name
+Your directory should only contain subdirectories named after
+each series that you have. In those subdirectories there 
+should be .cbz files that hold each chapter. 
 
-ex
-`flaskr/static/comics/akame_ga_kill/Chapter_{1-20}`
+NOTE:
+- Only cbz is supported right now
+- make sure to have the right permissions on your comic directory
+- I am in the process of making everything more forgiving and less strict. 
 
-Soft links can also be used
-
-If you cd into the `comics` directory and do `ln -s ~/dir/to/comics/* .`
-
-or
-
-`ln -s ~/dir/to/comics/comic.cbz .`
-
-it will be linked to your static comics folder and snakereader will be able to serve the files.
 
 run `./deploy` for "production"
 or if you want to test and debug and contribute just run

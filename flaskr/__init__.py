@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 from .helper import *
 
-
+# CHANGE THIS TO WHATEVER YOUR COMIC DIRECTORY IS
 COMICS_DIRECTORY = '/home/shahriyar/Documents/comics/'
 # DO NOT CHANGE
 CACHE_DIR = 'flaskr/static/cache/'
@@ -16,6 +16,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
+        # CHANGE THIS IN DEPLOYMENT
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
@@ -52,6 +53,9 @@ def create_app(test_config=None):
 
         return render_template('comics.html', series_dict=series_dict)
     
+    """
+    Admin page where you can see stats about your server
+    """
     @app.route("/management")
     @app.route("/management/")
     def management():
@@ -64,7 +68,10 @@ def create_app(test_config=None):
             "cache_directory_size":cache_directory_size
         }
         return render_template('manage.html', context = context)
-    
+
+    """
+    Clears cache directory
+    """
     @app.route("/management/clearcache")
     @app.route("/management/clearcache/")
     def clear_cache():
