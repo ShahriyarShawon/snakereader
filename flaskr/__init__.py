@@ -1,12 +1,16 @@
 import os
+import shutil
 from zipfile import ZipFile
+
 
 from flask import Flask, render_template, request, redirect, url_for
 
 from .helper import num_sort
 
 
-COMICS_DIRECTORY = 'flaskr/static/comics'
+COMICS_DIRECTORY = '/home/shahriyar/Documents/comics/'
+# DO NOT CHANGE
+CACHE_DIR = 'flaskr/static/cache/'
 
 def create_app(test_config=None):
     # create and configure the app
@@ -95,17 +99,30 @@ def create_app(test_config=None):
             previous_chapter = chapters[current_chapter_index-1]
 
         # extracts cbz file if needed
-        if not os.path.isdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter)):
-            with ZipFile('flaskr/static/comics/{}/{}.cbz'.format(comic_name, chapter)) as zipped:
-                zipped.extractall('flaskr/static/comics/{}'.format(comic_name))
-                print("Iran")
-            
-        
-        pages = os.listdir('flaskr/static/comics/{}/{}'.format(comic_name, chapter))
+        chapter_folder = COMICS_DIRECTORY+'{}/{}'.format(comic_name, chapter)
+        if not os.path.isdir(chapter_folder):
+            with ZipFile(COMICS_DIRECTORY+'{}/{}.cbz'.format(comic_name, chapter)) as zipped:
+                zipped.extractall(COMICS_DIRECTORY+'{}'.format(comic_name))
+
+        # Pages should be copied to the cache directory then 
+        # everything else should run
+        pages = os.listdir(chapter_folder)
+
+        # create a temporary cache directory that flask can serve images from
+        comic_cache_dir = CACHE_DIR+'{}/'.format(comic_name)
+        chapter_cache_dir = CACHE_DIR+'{}/{}'.format(comic_name, chapter)
+
+        if not os.path.isdir(comic_cache_dir):
+            os.mkdir(comic_cache_dir)
+        if not os.path.isdir(chapter_cache_dir):
+            os.mkdir(chapter_cache_dir)
+            for page in pages:
+                shutil.copy(COMICS_DIRECTORY+"{}/{}/{}".format(comic_name,chapter,page),chapter_cache_dir)
+
         # making sure it's sorting numerically and not lexicographically
         pages.sort(key=num_sort)
         pages = [
-            'comics/{}/{}/{}'.format(comic_name, chapter, page) for page in pages]
+            'cache/{}/{}/{}'.format(comic_name, chapter, page) for page in pages]
 
         context = {
             "comic_name":comic_name,
@@ -118,34 +135,35 @@ def create_app(test_config=None):
 
         return render_template('chapter.html', pages=pages, context=context)
 
-    @app.route('/library/upload', methods=['GET','POST'])
-    def upload():
-        if request.method == 'POST':
-            # You can add supported file types here but as of Dec 4 2020, 
-            # only directories of images actually work
-            supported_filetypes = [
-                "cbz",
-                "zip",
-            ]
+    # COMPLETELY NONFUNCTIONAL ATM
+    # @app.route('/library/upload', methods=['GET','POST'])
+    # def upload():
+    #     if request.method == 'POST':
+    #         # You can add supported file types here but as of Dec 4 2020, 
+    #         # only directories of images actually work
+    #         supported_filetypes = [
+    #             "cbz",
+    #             "zip",
+    #         ]
 
-            folder = request.form["folder"]
-            f = request.files['comic']
-            final_filename = "{}/{}".format(folder, f.filename)
-            final_filepath = 'flaskr/static/comics/{}'.format(final_filename)
-            f.save(final_filepath)
+    #         folder = request.form["folder"]
+    #         f = request.files['comic']
+    #         final_filename = "{}/{}".format(folder, f.filename)
+    #         final_filepath = 'flaskr/static/comics/{}'.format(final_filename)
+    #         f.save(final_filepath)
 
-            extension = final_filename[-3:]
-            print("The final filename is {}".format(final_filename))
-            print("The extension is {}".format(extension))
-            if extension in supported_filetypes:
-                with ZipFile(final_filepath) as zf:
-                    zf.extractall("flaskr/static/comics/{}".format(folder))
-                    os.remove(final_filepath)
+    #         extension = final_filename[-3:]
+    #         print("The final filename is {}".format(final_filename))
+    #         print("The extension is {}".format(extension))
+    #         if extension in supported_filetypes:
+    #             with ZipFile(final_filepath) as zf:
+    #                 zf.extractall("flaskr/static/comics/{}".format(folder))
+    #                 os.remove(final_filepath)
  
-            return redirect('/library')
-        else:
-            comics = os.listdir('flaskr/static/comics/')
+    #         return redirect('/library')
+    #     else:
+    #         comics = os.listdir('flaskr/static/comics/')
 
-            return render_template('upload.html', comics=comics)
+    #         return render_template('upload.html', comics=comics)
 
     return app
